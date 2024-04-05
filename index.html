@@ -1,87 +1,88 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>张沐晨是去漫展去的！！！</title>
-   <link rel="icon" href="images/GenshinIcon.png">
-   <style>
-       body {
-           font-family: 'Roboto', sans-serif;
-           background: #333;
-           color: #fff;
-           margin: 0;
-           padding: 20px;
-           height: 100vh;
-           display: flex;
-           flex-direction: column;
-           justify-content: center;
-           align-items: center;
-       }
-       h1 {
-           text-align: center;
-           color: #f6d365;
-           text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-           margin-bottom: 30px;
-       }
-       nav {
-           max-width: 600px;
-           width: 100%;
-       }
-       ul {
-           list-style-type: none;
-           padding: 0;
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-       }
-       li {
-           background: #444;
-           border-radius: 5px;
-           box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-           margin-bottom: 10px;
-           padding: 10px;
-           transition: transform 0.3s, box-shadow 0.3s;
-           width: 100%;
-       }
-       li:hover {
-           transform: translateY(-5px);
-           box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-       }
-       a {
-           text-decoration: none;
-           color: #f6d365;
-           display: flex;
-           align-items: center;
-           padding: 5px;
-           transition: transform 0.2s;
-           width: 100%;
-       }
-       a:hover {
-           transform: scale(1.05);
-       }
-       a i {
-           margin-right: 10px;
-       }
-       @media (max-width: 600px) {
-           nav {
-               max-width: 100%;
-           }
-       }
-   </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>张沐晨是去漫展去的！！！</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <main>
-       <h1>下载视频文件, 并观看张沐晨的兽装视频</h1>
-       <nav>
-           <ul>
-               <li><a href="videos/1.mp4" download><i class="fas fa-video"></i> lsp你听我说</a></li>
-               <li><a href="videos/2.mp4" download><i class="fas fa-video"></i> 大半夜画的jb福瑞</a></li>
-               <li><a href="videos/3.mp4" download><i class="fas fa-video"></i> show his 兽装</a></li>
-               <li><a href="videos/4.mp4" download><i class="fas fa-video"></i> 热死力</a></li>
-               <li><a href="videos/5.mp4" download><i class="fas fa-video"></i> 重磅！跳舞视频！！！</a></li>
-           </ul>
-       </nav>
-   </main>
+    <main>
+        <h1>观看去漫展去的的兽装视频</h1>
+        <nav>
+            <ul>
+                <li><a href="videos/1.mp4" download><i class="fas fa-video"></i> lsp你听我说</a></li>
+                <li><a href="videos/2.mp4" download><i class="fas fa-video"></i> 大半夜画的jb福瑞</a></li>
+                <li><a href="videos/3.mp4" download><i class="fas fa-video"></i> show his 兽装</a></li>
+                <li><a href="videos/4.mp4" download><i class="fas fa-video"></i> 热死力</a></li>
+                <li><a href="videos/5.mp4" download><i class="fas fa-video"></i> 重磅！跳舞视频！！！</a></li>
+            </ul>
+        </nav>
+        <section id="comments">
+            <h2>评论区域</h2>
+            <form id="comment-form">
+                <label for="comment">评论:</label>
+                <textarea id="comment" name="comment" required></textarea>
+                <button type="submit">提交评论</button>
+            </form>
+            <div id="comment-section"></div>
+            <p id="comment-limit-message"></p> <!-- 用于显示评论限制信息 -->
+        </section>
+    </main>
+    
+    <script>
+        // 获取IP地址
+        function getIPAddress() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://api.ipify.org?format=json', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var ipAddress = response.ip;
+                    // 存储IP地址到localStorage以便后续使用
+                    localStorage.setItem('userIpAddress', ipAddress);
+                }
+            };
+            xhr.send();
+        }
+
+        // 页面加载时获取IP地址
+        window.onload = getIPAddress;
+
+        // 修复每小时只能评论一次的功能问题
+        function canComment() {
+            var oneHourInMilliseconds = 60 * 60 * 1000;
+            var lastCommentTime = localStorage.getItem('lastCommentTime');
+            var currentTime = new Date().getTime();
+            var ipAddress = localStorage.getItem('userIpAddress');
+            if (!ipAddress) {
+                // 如果IP地址未获取到，则不允许评论
+                return false;
+            }
+            if (lastCommentTime && (currentTime - lastCommentTime) < oneHourInMilliseconds) {
+                document.getElementById('comment-limit-message').textContent = '每小时只能评论一次，请一小时后再试。';
+                return false;
+            }
+            // 允许评论并更新最后评论时间
+            localStorage.setItem('lastCommentTime', currentTime);
+            return true;
+        }
+
+        // 处理评论提交
+        document.getElementById('comment-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (canComment()) {
+                var comment = document.getElementById('comment').value;
+                var ipAddress = localStorage.getItem('userIpAddress');
+                var commentElement = document.createElement('div');
+                commentElement.innerHTML = '<strong>IP地址为 ' + ipAddress + ' 的用户</strong><br><strong>评论：</strong>' + comment;
+                document.getElementById('comment-section').appendChild(commentElement);
+                document.getElementById('comment').value = '';
+                // 清空评论限制信息
+                document.getElementById('comment-limit-message').textContent = '';
+            }
+        });
+    </script>
 </body>
 </html>
