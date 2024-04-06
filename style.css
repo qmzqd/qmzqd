@@ -9,25 +9,25 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-h1 {
+  }
+  
+  h1 {
     text-align: center;
     color: #f6d365;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    margin-bottom: 60px; /* 增加顶部间距 */
+    margin-bottom: 60px;
     font-size: 2.5rem;
-}
-
-nav ul {
+  }
+  
+  nav ul {
     list-style-type: none;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-}
-
-nav li {
+  }
+  
+  nav li {
     background: #444;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -36,39 +36,39 @@ nav li {
     transition: transform 0.3s, box-shadow 0.3s;
     width: calc(25% - 10px);
     text-align: center;
-}
-
-nav li:hover {
+  }
+  
+  nav li:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-}
-
-nav a {
+  }
+  
+  nav a {
     text-decoration: none;
     color: #f6d365;
     display: flex;
     align-items: center;
     width: 100%;
     height: 100%;
-}
-
-nav a i {
+  }
+  
+  nav a i {
     margin-right: 10px;
     font-size: 1.5rem;
-}
-
-#comments {
+  }
+  
+  #comments {
     width: 100%;
     max-width: 600px;
-    margin: 30px 0; /* 增加评论区与视频列表的间距 */
-}
-
-#comments h2 {
+    margin: 30px 0;
+  }
+  
+  #comments h2 {
     text-align: center;
     color: #f6d365;
-}
-
-#comment-form textarea {
+  }
+  
+  #comment-form textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -76,9 +76,9 @@ nav a i {
     border-radius: 5px;
     background: #444;
     color: #fff;
-}
-
-#comment-form button {
+  }
+  
+  #comment-form button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -86,27 +86,39 @@ nav a i {
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s;
-}
-
-#comment-form button:hover {
+  }
+  
+  #comment-form button:hover {
     background-color: #e0b93b;
-}
-
-#comment-section {
+  }
+  
+  #comment-section {
     margin-top: 20px;
-}
-
-#comment-section div {
+  }
+  
+  #comment-section div {
     background: #444;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     padding: 10px;
     margin-bottom: 10px;
     width: 100%;
-}
-
-@media (max-width: 600px) {
+  }
+  
+  /* 新增评论时间样式 */
+  .comment-time {
+    color: #f6d365;
+    background-color: #444;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-right: 10px;
+    font-size: 0.9rem;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  @media (max-width: 600px) {
     nav li {
-        width: calc(50% - 10px);
+      width: calc(50% - 10px);
     }
-}
+  }

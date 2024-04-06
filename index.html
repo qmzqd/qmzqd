@@ -54,18 +54,18 @@
           <textarea id="comment" name="comment" required></textarea>
           <button type="submit">提交评论</button>
         </form>
-        <div id="comment-section"></div>
+        <div id="comment-section">
+          <!-- 评论将被动态添加到这里 -->
+        </div>
         <p id="comment-limit-message"></p>
-        <!-- 用于显示评论限制信息 -->
       </section>
     </main>
 
     <script>
-      // 获取IP地址并修复每小时评论限制
-      // 页面加载时获取IP地址
+      // JavaScript代码
       window.onload = function () {
         getIPAddress();
-        loadComments(); // 加载页面时读取评论
+        loadComments();
       };
 
       function getIPAddress() {
@@ -95,7 +95,7 @@
         localStorage.setItem("commentLastTime", currentTime);
         return true;
       }
-      // 处理评论提交
+
       document
         .getElementById("comment-form")
         .addEventListener("submit", function (event) {
@@ -107,22 +107,28 @@
             document.getElementById("comment").value = ""; // 清空输入框
           }
         });
-      // 保存和加载评论
+
       function saveComment(comment) {
         var comments = JSON.parse(localStorage.getItem("comments")) || [];
-        comments.push(comment);
+        var currentTime = new Date().toLocaleString(); // 获取当前时间
+        comments.push({ text: comment, time: currentTime }); // 保存评论和时间
         localStorage.setItem("comments", JSON.stringify(comments));
       }
+
       function loadComments() {
         var comments = JSON.parse(localStorage.getItem("comments")) || [];
         comments.forEach((comment) => {
-          displayComment(comment, localStorage.getItem("ipAddress"));
+          displayComment(comment.text, comment.time);
         });
       }
 
       function displayComment(comment, ipAddress) {
         var commentElement = document.createElement("div");
-        commentElement.innerHTML = `<strong>IP地址为 ${ipAddress} 的用户</strong><br><strong>评论：</strong>${comment}`;
+        commentElement.innerHTML = `
+    <strong class="comment-time">${ipAddress} - ${new Date(
+          comment.time
+        ).toLocaleString()}</strong><br>
+    ${comment.text}  `;
         document.getElementById("comment-section").appendChild(commentElement);
       }
     </script>
