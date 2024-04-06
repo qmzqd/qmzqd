@@ -32,40 +32,34 @@
     </main>
     
     <script>
-        // 获取IP地址
+        // 获取IP地址并修复每小时评论限制
+        // 页面加载时获取IP地址
+        window.onload = function() {
+            getIPAddress();
+            loadComments(); // 加载页面时读取评论
+        };
+
         function getIPAddress() {
-            var xhr = new XMLHttpRequest(); // 修复了XMLHttpRequest的实例化
+            var xhr = new XMLHttpRequest();
             xhr.open('GET', 'https://api.ipify.org?format=json', true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var response = JSON.parse(xhr.responseText);
-                    var ipAddress = response.ip;
-                    // 存储IP地址到localStorage以便后续使用
-                    localStorage.setItem('ipAddress', ipAddress); // 修正了键名
+                    localStorage.setItem('ipAddress', response.ip);
                 }
             };
             xhr.send();
         }
 
-        // 页面加载时获取IP地址
-        window.onload = getIPAddress;
-
-        // 修复每小时只能评论一次的功能问题
         function canComment() {
             var oneHourInMilliseconds = 60 * 60 * 1000;
-            var lastCommentTime = localStorage.getItem('commentLastTime'); // 修正了键名
+            var lastCommentTime = localStorage.getItem('commentLastTime');
             var currentTime = new Date().getTime();
-            var ipAddress = localStorage.getItem('ipAddress'); // 修正了键名
-            if (!ipAddress) {
-                // 如果IP地址未获取到，则不允许评论
-                return false;
-            }
             if (lastCommentTime && (currentTime - lastCommentTime) < oneHourInMilliseconds) {
                 document.getElementById('comment-limit-message').textContent = '每小时只能评论一次，请一小时后再试。';
                 return false;
             }
-            // 允许评论并更新最后评论时间
-            localStorage.setItem('commentLastTime', currentTime); // 修正了键名
+            localStorage.setItem('commentLastTime', currentTime);
             return true;
         }
 
@@ -74,15 +68,31 @@
             event.preventDefault();
             if (canComment()) {
                 var comment = document.getElementById('comment').value;
-                var ipAddress = localStorage.getItem('ipAddress'); // 修正了键名
-                var commentElement = document.createElement('div');
-                commentElement.innerHTML = '<strong>IP地址为 ' + ipAddress + ' 的用户</strong><br><strong>评论：</strong>' + comment;
-                document.getElementById('comment-section').appendChild(commentElement);
-                document.getElementById('comment').value = '';
-                // 清空评论限制信息
-                document.getElementById('comment-limit-message').textContent = '';
+                saveComment(comment);
+                displayComment(comment, localStorage.getItem('ipAddress'));
+                document.getElementById('comment').value = ''; // 清空输入框
             }
         });
+
+        // 保存和加载评论
+        function saveComment(comment) {
+            var comments = JSON.parse(localStorage.getItem('comments')) || [];
+            comments.push(comment);
+            localStorage.setItem('comments', JSON.stringify(comments));
+        }
+
+        function loadComments() {
+            var comments = JSON.parse(localStorage.getItem('comments')) || [];
+            comments.forEach(comment => {
+                displayComment(comment, localStorage.getItem('ipAddress'));
+            });
+        }
+
+        function displayComment(comment, ipAddress) {
+            var commentElement = document.createElement('div');
+            commentElement.innerHTML = `<strong>IP地址为 ${ipAddress} 的用户</strong><br><strong>评论：</strong>${comment}`;
+            document.getElementById('comment-section').appendChild(commentElement);
+        }
     </script>
 </body>
 </html>
