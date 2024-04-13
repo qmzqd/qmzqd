@@ -81,7 +81,7 @@
       }
 
       function canComment() {
-        var oneHourInMilliseconds = 60 * 60 * 1000;
+        var oneHourInMilliseconds = 1;//60 * 60 * 1000;
         var lastCommentTime = localStorage.getItem("commentLastTime");
         var currentTime = new Date().getTime();
         if (
